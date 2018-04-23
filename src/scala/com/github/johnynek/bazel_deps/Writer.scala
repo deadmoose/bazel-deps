@@ -241,6 +241,10 @@ object Writer {
 
         // TODO: converge on using java_import instead of java_library:
         // https://github.com/johnynek/bazel-deps/issues/102
+        val tags = uvToVerExplicit.get(u) match {
+          case Some(x) => Set("maven_coordinates=" + x.asString)
+          case None => Set.empty[String]
+        }
         lang match {
           case Language.Java =>
             Target(lang,
@@ -250,6 +254,7 @@ object Writer {
               jars = Set.empty,
               runtimeDeps = runtime_deps -- uvexports,
               processorClasses = getProcessorClasses(u),
+              tags = tags,
               licenses = licenses)
           case _: Language.Scala =>
             Target(lang,
@@ -259,6 +264,7 @@ object Writer {
               jars = Set(lab),
               runtimeDeps = runtime_deps -- uvexports,
               processorClasses = getProcessorClasses(u),
+              tags = tags,
               licenses = licenses)
         }
 

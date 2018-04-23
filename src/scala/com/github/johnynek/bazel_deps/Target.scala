@@ -61,6 +61,7 @@ case class Target(
   exports: Set[Label] = Set.empty,
   runtimeDeps: Set[Label] = Set.empty,
   processorClasses: Set[ProcessorClass] = Set.empty,
+  tags: Set[String] = Set.empty,
   licenses: Set[String] = Set.empty) {
 
   def toDoc: Doc = {
@@ -123,9 +124,14 @@ case class Target(
       if (!licenses.isEmpty) renderList(Doc.text("["), licenses.toList, Doc.text("]"))(quote)
       else Doc.empty
 
+    def renderTags(tags: Set[String]): Doc =
+      if (!tags.isEmpty) renderList(Doc.text("["), tags.toList, Doc.text("]"))(quote)
+      else Doc.empty
+
     sortKeys(targetType, name.name, List(
       visibility(),
       "deps" -> labelList(deps),
+      "tags" -> renderTags(tags),
       "licenses" -> renderLicenses(licenses),
       "srcs" -> sources.render,
       "jars" -> labelList(jars),
